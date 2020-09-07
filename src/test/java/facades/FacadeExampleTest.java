@@ -1,7 +1,7 @@
 package facades;
 
+import entities.Movie;
 import utils.EMF_Creator;
-import entities.RenameMe;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -16,15 +16,18 @@ import org.junit.jupiter.api.Test;
 public class FacadeExampleTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static MovieFacade facade;
+
+    private Movie m1;
+    private Movie m2;
 
     public FacadeExampleTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
-       emf = EMF_Creator.createEntityManagerFactoryForTest();
-       facade = FacadeExample.getFacadeExample(emf);
+        emf = EMF_Creator.createEntityManagerFactoryForTest();
+        facade = MovieFacade.getFacadeExample(emf);
     }
 
     @AfterAll
@@ -36,13 +39,14 @@ public class FacadeExampleTest {
     //TODO -- Make sure to change the script below to use YOUR OWN entity class
     @BeforeEach
     public void setUp() {
+        m1 = new Movie(1999, "XD", new String[]{"hej", "xd", "leo"});
+        m2 = new Movie(2010, "hej", new String[]{"idk", "fu", "leo", "FUCK"});
+
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
-
+            em.persist(m1);
+            em.persist(m2);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -57,7 +61,7 @@ public class FacadeExampleTest {
     // TODO: Delete or change this method 
     @Test
     public void testAFacadeMethod() {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
+        assertEquals(m1.getId(), m1.getId());
     }
 
 }
