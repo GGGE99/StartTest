@@ -5,10 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQuery(name = "Movie.deleteAllRows", query = "DELETE from Movie")
+@NamedQueries({
+@NamedQuery(name = "Movie.deleteAllRows", query = "DELETE from Movie"),
+@NamedQuery(name = "Movie.getAll", query = "SELECT m FROM Movie m"),
+@NamedQuery(name = "Movie.getByTitle", query = "SELECT m FROM Movie m WHERE m.title LIKE CONCAT('%',:title,'%')"),
+@NamedQuery(name = "Movie.getById", query = "SELECT m FROM Movie m WHERE m.id = :id")
+})
 public class Movie implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,6 +24,7 @@ public class Movie implements Serializable {
     private int year;
     private String title;
     private String[] actors;
+    
 
     public Movie(int year, String title, String[] actors) {
         this.year = year;
@@ -59,12 +66,5 @@ public class Movie implements Serializable {
     public void setActors(String[] actors) {
         this.actors = actors;
     }
-
-    @Override
-    public String toString() {
-        return "Movie{" + "id=" + id + ", year=" + year + ", title=" + title + ", actors=" + actors + '}';
-    }
-
-
 
 }
