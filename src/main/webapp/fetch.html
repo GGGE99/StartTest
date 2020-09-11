@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    </head>
+    <body>
+        <div id="form">
+            <input type="text" id="num">
+            <input type="submit" id="sub" value="Get User">
+            <input type="submit" id="GetAll" value="Get All">
+        </div>
+        <p id="para"></p>
+        <table class="table" id="tb"></table>
+
+
+        <script>
+
+            document.getElementById("GetAll").addEventListener("click", (evt) => {
+                getData("", makeTable)
+            })
+
+            document.getElementById("sub").addEventListener("click", (evt) => {
+                getData(document.getElementById("num").value, writeSingle)
+            })
+            function writeSingle(data) {
+                console.log(data);
+                document.getElementById("para").innerHTML =
+                        "Name: " + data.name + "<br>" +
+                        "Phone: " + data.phone + "<br><br>" +
+                        "<b>Address</b><br>" +
+                        "Street: " + data.address.street + "<br>" +
+                        "City " + data.address.city + "<br>" +
+                        "Zip: " + data.address.zipcode + "<br>" +
+                        "Geo (lat, lng): " + data.address.geo.lat + ", " + data.address.geo.lng;
+            }
+            function makeTable(data) {
+                let dataAr = data.map(n => "<tr><th>" + n.name + "</th><th>" + n.phone + "</th></tr>");
+                document.getElementById("tb").innerHTML = "<tr><th>Name</th><th>Phone</th></tr>" + dataAr.join("")
+            }
+
+            function getData(id, fun) {
+                let url = "https://jsonplaceholder.typicode.com/users/" + id;
+                let retVal;
+                fetch(url).then(res => res.json()).then(data => {
+                    fun(data)
+                });
+//                        console.log(retVal);
+                function setVal(val) {
+                    retVal = val
+//                    console.log(retVal);
+                }
+                return retVal
+            }
+
+
+        </script>
+    </body>
+</html>
