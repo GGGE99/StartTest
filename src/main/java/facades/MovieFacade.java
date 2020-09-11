@@ -4,15 +4,14 @@ import entities.Movie;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 public class MovieFacade {
 
     private static MovieFacade instance;
     private static EntityManagerFactory emf;
-
-    private MovieFacade() {
-    }
+    
+    private MovieFacade() {}
 
     public static MovieFacade getFacadeExample(EntityManagerFactory _emf) {
         if (instance == null) {
@@ -25,40 +24,77 @@ public class MovieFacade {
     private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-
-    public static void addMovie(int year, String title, String[] actors) {
-        Movie movie = new Movie(year, title, actors);
+    
+    public void deleteAllMovies(){
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(movie);
+            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
-
-    public static Movie getMocieById(long id) {
+    
+    public long getMovieCount(){
         EntityManager em = emf.createEntityManager();
-        Movie movie = null;
+        try{
+            long movieCount = (long)em.createQuery("SELECT COUNT(m) FROM Movie m").getSingleResult();
+            return movieCount;
+        }finally{  
+            em.close();
+        }
+    }
+
+    public Movie getMovieById(long id){
+        EntityManager em = emf.createEntityManager();
         try {
-            movie = em.find(Movie.class, id);
+              Query query = em.createNamedQuery("Movie.getById");
+              query.setParameter("id", id);
+              Movie movie = (Movie) query.getSingleResult();
+              return movie;
+        }         
+        finally {
+            em.close();
+        }
+    }
+    
+    public List<Movie> getMovieByTitle(String title){
+        EntityManager em = emf.createEntityManager();
+        try {
+              Query query = em.createNamedQuery("Movie.getByTitle");
+              query.setParameter("title", title);
+              List<Movie> movieList = query.getResultList();
+              return movieList;
+        }         
+        finally {
+            em.close();
+        }  
+    }
+    
+    public List<Movie> getAllMovies() {
+                
+        EntityManager em = emf.createEntityManager();
+        try {
+              Query query = em.createNamedQuery("Movie.getAll");
+              List<Movie> movies = query.getResultList();
+              return movies;
+        }         
+        finally {
+            em.close();
+        }
+    }
+    
+    public void populateDB(){
+            EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(new Movie(1986, "Tenet", new String[]{"Robert", "Jhon","Kenneth"}));
+            em.persist(new Movie(2003, "Kill Bill", new String[]{"Uma Thurman", "Daryl Hannah"}));
+            em.persist(new Movie(1991, "Point Break", new String[]{"Patrick Swayze", "Keanu Reeves"}));
+            em.getTransaction().commit();
         } finally {
             em.close();
         }
-        return movie;
     }
-
-    //TODO Remove/Change this before use
-    public long getRenameMeCount() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            long renameMeCount = (long) em.createQuery("SELECT COUNT(r) FROM RenameMe r").getSingleResult();
-            return renameMeCount;
-        } finally {
-            em.close();
-        }
-
-    }
-
 }

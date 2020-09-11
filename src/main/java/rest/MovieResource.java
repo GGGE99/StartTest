@@ -1,12 +1,12 @@
 package rest;
 
-import DTO.MovieDTO;
+import DTO.MoviesDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import entities.Movie;
 import utils.EMF_Creator;
 import facades.MovieFacade;
-import javax.persistence.EntityManager;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,7 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 //Todo Remove or change relevant parts before ACTUAL use
-@Path("xxx")
+@Path("movie")
 public class MovieResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
@@ -31,14 +31,60 @@ public class MovieResource {
     public String demo() {
         return "{\"msg\":\"Hello World\"}";
     }
-    @Path("{id}")
+    @Path("count")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public String getRenameMeCount(@PathParam("id") int id){
-        EntityManager em = EMF.createEntityManager();
+    public String getRenameMeCount() {
+        long count = FACADE.getMovieCount();
+        //System.out.println("--------------->"+count);
+        return "{\"count\":"+count+"}";  //Done manually so no need for a DTO
+    }
+    
+    @Path("all")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllMovies() {
+        List<Movie> allMovies = FACADE.getAllMovies();
+        return GSON.toJson(allMovies);
+    }
+    
+    @Path("simpleall")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getSimpleAllMovies() {
+        MoviesDTO allMovies = new MoviesDTO(FACADE.getAllMovies());
+        return GSON.toJson(allMovies);
+    }
+    
+    @GET
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getMovieById(@PathParam("id") int id) {
+        Movie movie = FACADE.getMovieById(id);
+        return GSON.toJson(movie);
+    }
+    
+    @GET
+    @Path("/title/{title}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getMovieByName(@PathParam("title") String title) {
+        List<Movie> movieList = FACADE.getMovieByTitle(title);
+        return GSON.toJson(movieList);
+    }
+    
+    @GET
+    @Path("/populate")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String populate() {
+        FACADE.populateDB();
+        return "{\"msg\":\"3 rows added\"}";
+    }
+    
+     @GET
+    @Path("/piphans")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String piphans() {
         
-        MovieDTO md = new MovieDTO(em.find(Movie.class, id));
-        em.close();
-        return GSON.toJson(md);
+        return "{\"msg\":\"Vi bør afskaffe burhøns, siger piphans\",\"tlf\":\"1010101\"}";
     }
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <ul id="ul"></ul>
+        <form>
+            <input id="input">
+            <input id="btn" type="submit" value="add name">
+            <input id="rf" type="submit" value="remove first">
+            <input id="rl" type="submit" value="remove last">
+        </form>
+
+        <script>
+            let names = ["Lars", "Jan", "Peter", "Bo", "Frederik"]
+
+            document.getElementById("ul").innerHTML = html(names)
+
+            document.getElementById("btn").addEventListener("click", (evt) => {
+                evt.preventDefault();
+                names.push(document.getElementById("input").value)
+                document.getElementById("ul").innerHTML = html(names)
+            })
+            document.getElementById("rf").addEventListener("click", (evt) => {
+                evt.preventDefault();
+                names.shift()
+                document.getElementById("ul").innerHTML = html(names)
+            })
+            document.getElementById("rl").addEventListener("click", (evt) => {
+                evt.preventDefault();
+                names.pop()
+                document.getElementById("ul").innerHTML = html(names)
+            })
+
+            function html(array) {
+                let tempName = array.map(n => "<li>" + n + "</li>")
+                return tempName.join("");
+            }
+        </script>
+
+        <br>
+        <table id="tabel"></table>
+        <form>
+            <input id="input1">
+            <input id="btn1" type="submit" value="Lower then">
+        </form>
+
+        <script>
+            var cars = [
+                {id: 1, year: 1997, make: 'Ford', model: 'E350', price: 3000},
+                {id: 2, year: 1999, make: 'Chevy', model: 'Venture', price: 4900},
+                {id: 3, year: 2000, make: 'Chevy', model: 'Venture', price: 5000},
+                {id: 4, year: 1996, make: 'Jeep', model: 'Grand Cherokee', price: 4799},
+                {id: 5, year: 2005, make: 'Volvo', model: 'V70', price: 44799}
+            ];
+
+            document.getElementById("tabel").innerHTML = tablemaker(cars);
+
+            document.getElementById("btn1").addEventListener("click", (evt) => {
+                evt.preventDefault();
+                let tempcars = cars.filter(n=> n.price < document.getElementById("input1").value)
+                document.getElementById("tabel").innerHTML = tablemaker(tempcars)
+            })
+
+            function tablemaker(array) {
+                let carArray = array.map(n => "<tr><th>" + n.id + "</th><th>" + n.year + "</th><th>" + n.make + "</th><th>" + n.model + "</th><th>" + n.price + "</th></tr>")
+                return "<tr><th>ID</th><th>YEAR</th><th>MAKE</th><th>MODEL</th><th>PRICE</th></tr>" + carArray.join("")
+            }
+        </script>
+    </body>
+</html>
