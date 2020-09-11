@@ -47,15 +47,7 @@ public class MovieResource {
         List<Movie> allMovies = FACADE.getAllMovies();
         return GSON.toJson(allMovies);
     }
-    
-    @Path("simpleall")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getSimpleAllMovies() {
-        MoviesDTO allMovies = new MoviesDTO(FACADE.getAllMovies());
-        return GSON.toJson(allMovies);
-    }
-    
+
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -78,13 +70,5 @@ public class MovieResource {
     public String populate() {
         FACADE.populateDB();
         return "{\"msg\":\"3 rows added\"}";
-    }
-    
-     @GET
-    @Path("/piphans")
-    @Produces({MediaType.APPLICATION_JSON})
-    public String piphans() {
-        
-        return "{\"msg\":\"Vi bør afskaffe burhøns, siger piphans\",\"tlf\":\"1010101\"}";
     }
 }
